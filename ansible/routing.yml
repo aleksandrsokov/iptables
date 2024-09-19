@@ -1,0 +1,76 @@
+---
+- name: routing
+  become: true
+  hosts: all
+  tasks:
+
+  - name: set iptables-persistent
+    apt: 
+      name: iptables-persistent
+      state: present
+      update_cache: yes
+    when: "'inetRouters' in group_names"
+
+  - name: install nmap
+    apt: 
+      name: nmap
+      state: present
+  
+  - name: install Nginx
+    apt: 
+      name: nginx
+      state: present
+      update_cache: yes
+    when: (ansible_hostname = "centralServer")
+
+  - name: stop UFW
+    command: systemctl stop ufw.service
+
+  - name: disable UFW
+    command: systemctl disable ufw.service
+
+  - name: set up forward packages across routers
+    sysctl:
+        name: net.ipv4.conf.all.forwarding
+        value: '1'
+        state: present
+    when: "'routers' in group_names"
+  
+  - name: disable default route
+    copy: 
+      src: "templates/00-installer-config.yaml"
+      dest: "/etc/netplan/00-installer-config.yaml"
+      owner: root
+      group: root
+      mode: 0644
+    when: (ansible_hostname != "inetRouter") 
+
+  - name: add default gateway for centralRouter
+    template: 
+      src: "50-vagrant_{{ansible_hostname}}.yaml"
+      dest: /etc/netplan/50-vagrant.yaml
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Iptables iptables_rules.ipv4
+    copy: 
+      src: "templates/iptables_rules.ipv4"
+      dest: "/etc/iptables/rules.v4"
+      owner: root
+      group: root
+    when: (ansible_hostname = "inetRouter") 
+
+  - name: Iptables iptables_rules.ipv4 inetrouter2
+    copy: 
+      src: "templates/inetRouter2_iptables"
+      dest: "/etc/iptables/rules.v4"
+      owner: root
+      group: root
+    when: (ansible_hostname = "inetRouter2") 
+
+
+
+  - name: restart all hosts
+    reboot:
+       reboot_timeout: 600

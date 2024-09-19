@@ -1,0 +1,9 @@
+---
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    enp0s19:
+      addresses:
+      - 192.168.50.17/24
+
