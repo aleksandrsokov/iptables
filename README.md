@@ -14,6 +14,7 @@ IPtables
       192.168.50.17/24 (для подключения по ssh)  
       
       настроен проброс порта 8888 -> 192.168.50.12:80(centralServer). Настройки iptables в файле  templates/iptables_rules.ipv4
+      запуск скрипта knock.sh host 8881 7777 9991
 
 
    3. **centralRouter** (центральный роутер)  
