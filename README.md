@@ -7,14 +7,15 @@ IPtables
       192.168.255.1/30  - router-net  
       _обратный маршрут 192.168.0.0/16 через 192.168.255.2(centralRouter)_  
       
-      так же реализован механизм knoking port. Настройки iptables в файле  templates/iptables_rules.ipv4
+      так же реализован механизм knoking port. Настройки iptables в файле  templates/iptables_rules.ipv4  
+      запуск скрипта knock.sh host 8881 7777 9991  
 
 
    1. **inetRouter2** (Роутер смотрящий в интернет)  
       192.168.50.17/24 (для подключения по ssh)  
       
       настроен проброс порта 8888 -> 192.168.50.12:80(centralServer). Настройки iptables в файле  templates/iptables_rules.ipv4
-      запуск скрипта knock.sh host 8881 7777 9991
+      
 
 
    3. **centralRouter** (центральный роутер)  
